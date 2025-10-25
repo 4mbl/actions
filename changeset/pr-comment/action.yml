@@ -4,12 +4,16 @@ inputs:
   message:
     default: 'Hey! Remember to add a changeset with `pnpm changeset add` to describe your changes for versioning.'
     description: The message to comment on the PR
-  token:
-    description: The GitHub token to use
-    required: true
 runs:
   using: composite
   steps:
+    - name: Check if GITHUB_TOKEN is set
+      if: env.GH_TOKEN == ''
+      shell: bash
+      run: |
+        echo "No GITHUB_TOKEN environment variable set"
+        exit 1
+
     - name: Checkout repository
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -32,7 +36,7 @@ runs:
           echo "comment_exists=false" >> "$GITHUB_ENV"
         fi
       env:
-        GH_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ env.GITHUB_TOKEN }}
         MESSAGE: ${{ inputs.message }}
 
     - name: Add comment if no comment posted
@@ -41,5 +45,5 @@ runs:
       run: |
         gh pr comment ${{ env.pr_number }} --body "$MESSAGE"
       env:
-        GH_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ env.GITHUB_TOKEN }}
         MESSAGE: ${{ inputs.message }}
