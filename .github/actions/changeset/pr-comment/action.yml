@@ -1,0 +1,42 @@
+name: Changeset PR Comment
+description: Add a comment to a PR if a changeset is not present
+inputs:
+  message:
+    default: 'Hey! Remember to add a changeset with `pnpm changeset add` to describe your changes for versioning.'
+    description: The message to comment on the PR
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+    - name: Check if a comment already exists
+      id: check_comment
+      shell: bash
+      run: |
+        PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        echo "pr_number=$PR_NUMBER" >> "$GITHUB_ENV"
+
+        COMMENTS=$(gh pr view "$PR_NUMBER" --json comments -q ".comments[] | select(.body | index(\"${MESSAGE}\")) | .id")
+
+        if [ -n "$COMMENTS" ]; then
+          echo "comment_exists=true" >> "$GITHUB_ENV"
+
+          echo "comment_id<<EOF" >> "$GITHUB_ENV"
+          echo "$COMMENTS" >> "$GITHUB_ENV"
+          echo "EOF" >> "$GITHUB_ENV"
+        else
+          echo "comment_exists=false" >> "$GITHUB_ENV"
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MESSAGE: ${{ inputs.message }}
+
+    - name: Add comment if no comment posted
+      if: env.comment_exists == 'false'
+      shell: bash
+      run: |
+        gh pr comment ${{ env.pr_number }} --body "$COMMENT_BODY"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COMMENT_BODY: ${{ inputs.message }}
