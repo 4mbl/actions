@@ -8,7 +8,7 @@ runs:
   using: composite
   steps:
     - name: Check if GITHUB_TOKEN is set
-      if: env.GH_TOKEN == ''
+      if: env.GITHUB_TOKEN == ''
       shell: bash
       run: |
         echo "No GITHUB_TOKEN environment variable set"

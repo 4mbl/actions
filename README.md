@@ -44,4 +44,6 @@ jobs:
     steps:
       - name: Changeset reminder comment
         uses: 4mbl/actions/changeset/pr-comment@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
