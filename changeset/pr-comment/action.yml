@@ -4,6 +4,9 @@ inputs:
   message:
     default: 'Hey! Remember to add a changeset with `pnpm changeset add` to describe your changes for versioning.'
     description: The message to comment on the PR
+  token:
+    description: The GitHub token to use
+    required: true
 runs:
   using: composite
   steps:
@@ -29,14 +32,14 @@ runs:
           echo "comment_exists=false" >> "$GITHUB_ENV"
         fi
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ inputs.token }}
         MESSAGE: ${{ inputs.message }}
 
     - name: Add comment if no comment posted
       if: env.comment_exists == 'false'
       shell: bash
       run: |
-        gh pr comment ${{ env.pr_number }} --body "$COMMENT_BODY"
+        gh pr comment ${{ env.pr_number }} --body "$MESSAGE"
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COMMENT_BODY: ${{ inputs.message }}
+        GH_TOKEN: ${{ inputs.token }}
+        MESSAGE: ${{ inputs.message }}
