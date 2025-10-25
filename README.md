@@ -32,14 +32,14 @@ Reusable GitHub Actions.
 name: Changeset PR Comment
 
 on:
-pull_request:
-  types: [opened, synchronize, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
-check-changesets:
-  if: github.actor != 'dependabot[bot]'
-  runs-on: ubuntu-latest
-  steps:
-    - name: Changeset reminder comment
-      uses: 4mbl/actions/changeset/pr-comment
+  check-changesets:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Changeset reminder comment
+        uses: 4mbl/actions/changeset/pr-comment
 ```
