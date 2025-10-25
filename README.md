@@ -24,6 +24,8 @@ Reusable GitHub Actions.
        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
   ```
 
+  You can do this easily with [`pinact`](https://github.com/suzuki-shunsuke/pinact). Just set the specifier to a major version like `actions/checkout@v5`, and execute `pinact run` to pin to the version hash. You can then use dependabot to update the action periodically.
+
 ## Examples
 
 ### `4mbl/actions/changeset/pr-comment`
