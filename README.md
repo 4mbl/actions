@@ -26,7 +26,7 @@ Reusable GitHub Actions.
 
   You can do this easily with [`pinact`](https://github.com/suzuki-shunsuke/pinact). Just set the specifier to a major version like `actions/checkout@v5`, and execute `pinact run` to pin to the version hash. You can then use dependabot to update the action periodically.
 
-## Examples
+## Actions
 
 ### `4mbl/actions/changeset/pr-comment`
 
@@ -47,3 +47,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+## Workflows
+
+### `4mbl/actions/workflows/ci-node-pnpm`
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: Node.js
+    uses: 4mbl/actions/.github/workflows/ci-node-pnpm.yaml@v1
+```
+
+If you need to enforce successful CI runs, you can use the `Node.js / Report results` check in GitHub branch protection rules.
