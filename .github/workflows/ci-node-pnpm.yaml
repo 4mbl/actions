@@ -34,15 +34,7 @@ jobs:
         uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
         with:
           cache: true
-
-      - name: Setup node
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
-        with:
-          node-version-file: package.json
-          cache: 'pnpm'
-
-      - name: Install
-        run: pnpm install
+          run_install: true
 
   typecheck:
     name: Typecheck
@@ -56,6 +48,7 @@ jobs:
       - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
         with:
           cache: true
+          run_install: true
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
@@ -76,6 +69,7 @@ jobs:
       - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
         with:
           cache: true
+          run_install: true
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
@@ -96,6 +90,7 @@ jobs:
       - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
         with:
           cache: true
+          run_install: true
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
@@ -116,6 +111,7 @@ jobs:
       - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
         with:
           cache: true
+          run_install: true
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
@@ -136,6 +132,7 @@ jobs:
       - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
         with:
           cache: true
+          run_install: true
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
