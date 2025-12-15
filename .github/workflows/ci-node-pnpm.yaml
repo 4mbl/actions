@@ -11,6 +11,7 @@ on:
         required: false
         type: number
         default: 10
+        description: Timeout in minutes for each step.
       disable-steps:
         required: false
         type: string
@@ -21,10 +22,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
-    name: CI
-    timeout-minutes: ${{ inputs.timeout-minutes }}
+  setup:
+    name: Setup
     runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -43,22 +44,102 @@ jobs:
       - name: Install
         run: pnpm install
 
-      - name: Typecheck
-        run: pnpm run --if-present typecheck
-        if: ${{ !contains(fromJson(inputs.disable-steps), 'typecheck') }}
+  typecheck:
+    name: Typecheck
+    needs: setup
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    if: ${{ !contains(fromJson(inputs.disable-steps), 'typecheck') }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: Format
-        run: pnpm run --if-present format:check
-        if: ${{ !contains(fromJson(inputs.disable-steps), 'format') }}
+      - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
+        with:
+          cache: true
 
-      - name: Lint
-        run: pnpm run --if-present lint
-        if: ${{ !contains(fromJson(inputs.disable-steps), 'lint') }}
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version-file: package.json
+          cache: 'pnpm'
 
-      - name: Build
-        run: pnpm run --if-present build
-        if: ${{ !contains(fromJson(inputs.disable-steps), 'build') }}
+      - run: pnpm run --if-present typecheck
 
-      - name: Test
-        run: pnpm run --if-present test
-        if: ${{ !contains(fromJson(inputs.disable-steps), 'test') }}
+  format:
+    name: Format
+    needs: setup
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    if: ${{ !contains(fromJson(inputs.disable-steps), 'format') }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
+        with:
+          cache: true
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version-file: package.json
+          cache: 'pnpm'
+
+      - run: pnpm run --if-present format:check
+
+  lint:
+    name: Lint
+    needs: setup
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    if: ${{ !contains(fromJson(inputs.disable-steps), 'lint') }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
+        with:
+          cache: true
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version-file: package.json
+          cache: 'pnpm'
+
+      - run: pnpm run --if-present lint
+
+  build:
+    name: Build
+    needs: setup
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    if: ${{ !contains(fromJson(inputs.disable-steps), 'build') }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
+        with:
+          cache: true
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version-file: package.json
+          cache: 'pnpm'
+
+      - run: pnpm run --if-present build
+
+  test:
+    name: Test
+    needs: setup
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    if: ${{ !contains(fromJson(inputs.disable-steps), 'test') }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - uses: pnpm/action-setup@b9e1dbc72ff7358f971cc0b7c62c7a0d83f1068b # main
+        with:
+          cache: true
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version-file: package.json
+          cache: 'pnpm'
+
+      - run: pnpm run --if-present test
