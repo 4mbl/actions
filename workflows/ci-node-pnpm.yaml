@@ -1,0 +1,63 @@
+name: CI - Node.js with pnpm
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: false
+        type: string
+        default: ubuntu-latest
+      timeout-minutes:
+        required: false
+        type: number
+        default: 10
+      disable-steps:
+        required: false
+        type: string
+        default: '[""]'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        cache: true
+
+      - name: Setup node
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version-file: package.json
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install
+
+      - name: Typecheck
+        run: pnpm run --if-present typecheck
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'typecheck') }}
+
+      - name: Format
+        run: pnpm run --if-present format:check
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'format') }}
+
+      - name: Lint
+        run: pnpm run --if-present lint
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'lint') }}
+
+      - name: Build
+        run: pnpm run --if-present build
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'build') }}
+
+      - name: Test
+        run: pnpm run --if-present test
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'test') }}
