@@ -138,3 +138,35 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm run --if-present test
+
+  results:
+    name: Report results
+    runs-on: ${{ inputs.os }}
+    needs:
+      - setup
+      - typecheck
+      - format
+      - lint
+      - build
+      - test
+    if: always()
+    steps:
+      - name: Evaluate results
+        run: |
+          results=(
+            "${{ needs.setup.result }}"
+            "${{ needs.typecheck.result }}"
+            "${{ needs.format.result }}"
+            "${{ needs.lint.result }}"
+            "${{ needs.build.result }}"
+            "${{ needs.test.result }}"
+          )
+
+          for result in "${results[@]}"; do
+            if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
+              echo "CI failed due to job result: $result"
+              exit 1
+            fi
+          done
+
+          echo "All required jobs succeeded or were skipped"
