@@ -28,8 +28,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c # main
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: package.json
+
+      - uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c # main
         with:
           cache: true
           run_install: true
@@ -43,15 +46,14 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: package.json
+
       - uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c # main
         with:
           cache: true
           run_install: true
-
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
-        with:
-          node-version-file: package.json
-          cache: 'pnpm'
 
       - run: pnpm run --if-present typecheck
 
@@ -64,15 +66,14 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: package.json
+
       - uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c # main
         with:
           cache: true
           run_install: true
-
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
-        with:
-          node-version-file: package.json
-          cache: 'pnpm'
 
       - run: pnpm run --if-present format:check
 
@@ -85,15 +86,14 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: package.json
+
       - uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c # main
         with:
           cache: true
           run_install: true
-
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
-        with:
-          node-version-file: package.json
-          cache: 'pnpm'
 
       - run: pnpm run --if-present lint
 
@@ -106,15 +106,14 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: package.json
+
       - uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c # main
         with:
           cache: true
           run_install: true
-
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
-        with:
-          node-version-file: package.json
-          cache: 'pnpm'
 
       - run: pnpm run --if-present build
 
@@ -127,15 +126,14 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: package.json
+
       - uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c # main
         with:
           cache: true
           run_install: true
-
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
-        with:
-          node-version-file: package.json
-          cache: 'pnpm'
 
       - run: pnpm run --if-present test
 
