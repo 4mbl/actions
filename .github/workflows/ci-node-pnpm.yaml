@@ -14,6 +14,17 @@ on:
         required: false
         type: string
         default: '[""]'
+    secrets:
+      TURBO_TOKEN:
+        description: Access token to a Turborepo compatible Remote Cache. You need to configure Turbo on your repo and call `turbo` on your `package.json` scripts for this to have any effect. You also need to pass TURBO_TEAM secret to this workflow.
+        required: false
+      TURBO_TEAM:
+        description: Turborepo team name. You also need to pass TURBO_TOKEN secret to this workflow.
+        required: false
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
