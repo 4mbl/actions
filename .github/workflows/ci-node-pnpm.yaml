@@ -43,7 +43,7 @@ jobs:
         with:
           node-version-file: package.json
 
-      - uses: pnpm/action-setup@9b5745cdf0a2e8c2620f0746130f809adb911c19 # main
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           cache: true
           run_install: true
@@ -61,7 +61,7 @@ jobs:
         with:
           node-version-file: package.json
 
-      - uses: pnpm/action-setup@9b5745cdf0a2e8c2620f0746130f809adb911c19 # main
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           cache: true
           run_install: true
@@ -81,7 +81,7 @@ jobs:
         with:
           node-version-file: package.json
 
-      - uses: pnpm/action-setup@9b5745cdf0a2e8c2620f0746130f809adb911c19 # main
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           cache: true
           run_install: true
@@ -101,7 +101,7 @@ jobs:
         with:
           node-version-file: package.json
 
-      - uses: pnpm/action-setup@9b5745cdf0a2e8c2620f0746130f809adb911c19 # main
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           cache: true
           run_install: true
@@ -121,7 +121,7 @@ jobs:
         with:
           node-version-file: package.json
 
-      - uses: pnpm/action-setup@9b5745cdf0a2e8c2620f0746130f809adb911c19 # main
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           cache: true
           run_install: true
@@ -141,7 +141,7 @@ jobs:
         with:
           node-version-file: package.json
 
-      - uses: pnpm/action-setup@9b5745cdf0a2e8c2620f0746130f809adb911c19 # main
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           cache: true
           run_install: true
