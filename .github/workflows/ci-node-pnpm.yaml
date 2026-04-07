@@ -15,6 +15,9 @@ on:
         type: string
         default: '[""]'
     secrets:
+      ENV:
+        description: JSON object containing arbitrary environment variables to inject into each job.
+        required: false
       TURBO_TOKEN:
         description: Access token to a Turborepo compatible Remote Cache. You need to configure Turbo on your repo and call `turbo` on your `package.json` scripts for this to have any effect. You also need to pass TURBO_TEAM secret to this workflow.
         required: false
@@ -25,6 +28,7 @@ on:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  ENV: ${{ secrets.ENV }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -36,6 +40,11 @@ jobs:
     runs-on: ${{ inputs.os }}
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
+        run: |
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -55,6 +64,11 @@ jobs:
     timeout-minutes: ${{ inputs.timeout-minutes }}
     if: ${{ !contains(fromJson(inputs.disable-steps), 'typecheck') }}
     steps:
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
+        run: |
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -75,6 +89,11 @@ jobs:
     timeout-minutes: ${{ inputs.timeout-minutes }}
     if: ${{ !contains(fromJson(inputs.disable-steps), 'format') }}
     steps:
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
+        run: |
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -95,6 +114,11 @@ jobs:
     timeout-minutes: ${{ inputs.timeout-minutes }}
     if: ${{ !contains(fromJson(inputs.disable-steps), 'lint') }}
     steps:
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
+        run: |
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -115,6 +139,11 @@ jobs:
     timeout-minutes: ${{ inputs.timeout-minutes }}
     if: ${{ !contains(fromJson(inputs.disable-steps), 'build') }}
     steps:
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
+        run: |
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -135,6 +164,11 @@ jobs:
     timeout-minutes: ${{ inputs.timeout-minutes }}
     if: ${{ !contains(fromJson(inputs.disable-steps), 'test') }}
     steps:
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
+        run: |
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
