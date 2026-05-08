@@ -47,4 +47,4 @@ runs:
         GH_TOKEN: ${{ github.token }}
         MESSAGE: ${{ inputs.message }}
       run: |
-        gh pr comment "$pr_number" --body "$MESSAGE"
+        gh pr comment "$pr_number" --repo "$GITHUB_REPOSITORY" --body "$MESSAGE"
