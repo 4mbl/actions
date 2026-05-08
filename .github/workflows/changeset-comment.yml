@@ -16,9 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  setup:
+  comment:
     timeout-minutes: ${{ inputs.timeout-minutes }}
-    name: Setup
     runs-on: ${{ inputs.os }}
     if: github.actor != 'dependabot[bot]'
     steps:
