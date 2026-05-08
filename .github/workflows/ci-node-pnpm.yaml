@@ -9,7 +9,7 @@ on:
         required: false
         type: number
         default: 10
-        description: Timeout in minutes for each step.
+        description: Timeout in minutes for each job.
       disable-steps:
         required: false
         type: string
