@@ -22,10 +22,6 @@ runs:
           exit 1
         }
 
-    # gh cli requires the repository to be checked out
-    - name: Checkout repository
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
     - name: Check if a comment already exists
       id: check_comment
       shell: bash
@@ -36,7 +32,7 @@ runs:
         PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "pr_number=$PR_NUMBER" >> "$GITHUB_ENV"
 
-        COMMENTS=$(gh pr view "$PR_NUMBER" --json comments --jq ".comments[] | select(.body | contains(\"${MESSAGE}\")) | .id")
+        COMMENTS=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json comments --jq ".comments[] | select(.body | contains(\"${MESSAGE}\")) | .id")
 
         if [ -n "$COMMENTS" ]; then
           echo "comment_exists=true" >> "$GITHUB_ENV"
