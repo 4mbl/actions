@@ -62,7 +62,7 @@ on:
 
 jobs:
   check-changesets:
-    uses: 4mbl/actions/.github/workflows/ci-node-pnpm.yml@v1
+    uses: 4mbl/actions/.github/workflows/changeset-comment.yml@v1
 ```
 
 The underlying action is [`4mbl/actions/changeset/pr-comment`](#4mblactionschangesetpr-comment).
