@@ -54,7 +54,7 @@ If you need to enforce successful CI runs, you can use the `Node.js / Report res
 ```yaml
 # .github/workflows/changeset-comment.yml
 
-name: Changeset Comment
+name: Changeset PR Comment
 
 on:
   pull_request:
