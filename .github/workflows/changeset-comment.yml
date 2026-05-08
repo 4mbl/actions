@@ -1,0 +1,26 @@
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: false
+        type: string
+        default: ubuntu-slim
+      timeout-minutes:
+        required: false
+        type: number
+        default: 10
+        description: Timeout in minutes for each step.
+
+concurrency:
+  group: ${{ github.workflow_ref }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    name: Setup
+    runs-on: ${{ inputs.os }}
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - name: Post comment
+        uses: 4mbl/actions/changeset/pr-comment@v1

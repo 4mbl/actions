@@ -26,33 +26,13 @@ Reusable GitHub Actions.
 
   You can do this easily with [`pinact`](https://github.com/suzuki-shunsuke/pinact). Just set the specifier to a major version like `actions/checkout@v5`, and execute `pinact run` to pin to the version hash. You can then use dependabot to update the action periodically.
 
-## Actions
-
-### `4mbl/actions/changeset/pr-comment`
-
-```yaml
-name: Changeset PR Comment
-
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-jobs:
-  check-changesets:
-    if: github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Changeset reminder comment
-        uses: 4mbl/actions/changeset/pr-comment@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
 ## Workflows
 
 ### `4mbl/actions/workflows/ci-node-pnpm`
 
 ```yaml
+# .github/workflows/ci.yml
+
 name: CI
 
 on:
@@ -68,3 +48,33 @@ jobs:
 ```
 
 If you need to enforce successful CI runs, you can use the `Node.js / Report results` check in GitHub branch protection rules.
+
+### `4mbl/actions/workflows/changeset-comment`
+
+```yaml
+# .github/workflows/changeset-comment.yml
+
+name: Changeset Comment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-changesets:
+    uses: 4mbl/actions/.github/workflows/ci-node-pnpm.yml@v1
+```
+
+The underlying action is [`4mbl/actions/changeset/pr-comment`](#4mblactionschangesetpr-comment).
+
+## Actions
+
+### `4mbl/actions/changeset/pr-comment`
+
+```yaml
+uses: 4mbl/actions/changeset/pr-comment@v1
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+This is the underlying action for the [`changeset-comment`](#4mblactionsworkflowschangeset-comment) workflow. Using the workflow is recommended since it requires less setup and is easier to maintain.
