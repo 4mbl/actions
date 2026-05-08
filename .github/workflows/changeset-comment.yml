@@ -27,4 +27,4 @@ jobs:
 
     steps:
       - name: Post comment
-        uses: 4mbl/actions/changeset/pr-comment@66f96f5ede3d49182eed6e3fd58b1e153b5ef659 # v1
+        uses: 4mbl/actions/changeset/pr-comment@707469cbfbcd7258260229946b7e5c6249df0730 # v1
