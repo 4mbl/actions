@@ -23,4 +23,4 @@ jobs:
     if: github.actor != 'dependabot[bot]'
     steps:
       - name: Post comment
-        uses: 4mbl/actions/changeset/pr-comment@v1
+        uses: 4mbl/actions/changeset/pr-comment@086c68f9d5fb43fa36e255cc9437fa2c157941fd # v1
