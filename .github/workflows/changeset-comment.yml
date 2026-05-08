@@ -17,9 +17,14 @@ concurrency:
 
 jobs:
   comment:
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    runs-on: ${{ inputs.os }}
     if: github.actor != 'dependabot[bot]'
+
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+
+    permissions:
+      pull-requests: write
+
     steps:
       - name: Post comment
         uses: 4mbl/actions/changeset/pr-comment@086c68f9d5fb43fa36e255cc9437fa2c157941fd # v1
