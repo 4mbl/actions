@@ -14,6 +14,12 @@ on:
         required: false
         type: string
         default: '[""]'
+      extra-steps:
+        required: false
+        type: string
+        default: '[""]'
+        description: |
+          Additional steps to run. These may be enabled by default in future major versions.
     secrets:
       ENV:
         description: JSON object containing arbitrary environment variables to inject into each job.
@@ -144,6 +150,26 @@ jobs:
       - run: bun install
 
       - run: bun run --if-present test
+
+  test_e2e:
+    name: Test (E2E)
+    needs: setup
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    if: ${{ !contains(fromJson(inputs.disable-steps), 'test_e2e') && contains(fromJson(inputs.extra-steps), 'test_e2e') }}
+    steps:
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
+        run: |
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - run: bun install
+
+      - run: bun run --if-present test:e2e
 
   results:
     name: Report results
