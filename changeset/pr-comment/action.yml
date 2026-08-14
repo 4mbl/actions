@@ -22,29 +22,29 @@ runs:
           exit 1
         }
 
-    - name: Check if a comment already exists
-      id: check_comment
+    - name: Check changesets and comments
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
         MESSAGE: ${{ inputs.message }}
       run: |
+        set -euo pipefail
+
         PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-        echo "pr_number=$PR_NUMBER" >> "$GITHUB_ENV"
+        HAS_CHANGESET=$(gh api --paginate \
+          "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" | \
+          jq --slurp --raw-output 'any(.[][]; .status != "removed" and (.filename | test("^\\.changeset/[^/]+\\.md$") and . != ".changeset/README.md"))')
 
-        COMMENTS=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json comments --jq ".comments[] | select(.body | contains(\"${MESSAGE}\")) | .id")
+        COMMENTS=$(gh api --paginate \
+          "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" | \
+          jq --slurp --raw-output --arg message "$MESSAGE" \
+            '.[][] | select(.user.login == "github-actions[bot]" and .body == $message) | .id')
 
-        if [ -n "$COMMENTS" ]; then
-          echo "comment_exists=true" >> "$GITHUB_ENV"
-        else
-          echo "comment_exists=false" >> "$GITHUB_ENV"
+        if [ "$HAS_CHANGESET" = "true" ]; then
+          for COMMENT_ID in $COMMENTS; do
+            gh api --method DELETE \
+              "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID"
+          done
+        elif [ -z "$COMMENTS" ]; then
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$MESSAGE"
         fi
-
-    - name: Add comment if no comment posted
-      if: env.comment_exists == 'false'
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        MESSAGE: ${{ inputs.message }}
-      run: |
-        gh pr comment "$pr_number" --repo "$GITHUB_REPOSITORY" --body "$MESSAGE"
