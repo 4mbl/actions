@@ -41,206 +41,90 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  setup:
-    name: Setup
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    steps:
-      - name: Inject environment variables
-        if: ${{ env.ENV != '' }}
-        run: |
-          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
-
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: package.json
-
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          cache: true
-          run_install: true
-
-  typecheck:
-    name: Typecheck
-    needs: setup
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    if: ${{ !contains(fromJson(inputs.disable-steps), 'typecheck') }}
-    steps:
-      - name: Inject environment variables
-        if: ${{ env.ENV != '' }}
-        run: |
-          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: package.json
-
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          cache: true
-          run_install: true
-
-      - run: pnpm run --if-present typecheck
-
-  format:
-    name: Format
-    needs: setup
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    if: ${{ !contains(fromJson(inputs.disable-steps), 'format') }}
-    steps:
-      - name: Inject environment variables
-        if: ${{ env.ENV != '' }}
-        run: |
-          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: package.json
-
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          cache: true
-          run_install: true
-
-      - run: pnpm run --if-present format:check
-
-  lint:
-    name: Lint
-    needs: setup
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    if: ${{ !contains(fromJson(inputs.disable-steps), 'lint') }}
-    steps:
-      - name: Inject environment variables
-        if: ${{ env.ENV != '' }}
-        run: |
-          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: package.json
-
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          cache: true
-          run_install: true
-
-      - run: pnpm run --if-present lint
-
-  build:
-    name: Build
-    needs: setup
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    if: ${{ !contains(fromJson(inputs.disable-steps), 'build') }}
-    steps:
-      - name: Inject environment variables
-        if: ${{ env.ENV != '' }}
-        run: |
-          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: package.json
-
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          cache: true
-          run_install: true
-
-      - run: pnpm run --if-present build
-
-  test:
-    name: Test
-    needs: setup
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    if: ${{ !contains(fromJson(inputs.disable-steps), 'test') }}
-    steps:
-      - name: Inject environment variables
-        if: ${{ env.ENV != '' }}
-        run: |
-          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: package.json
-
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          cache: true
-          run_install: true
-
-      - run: pnpm run --if-present test
-
-  test_e2e:
-    name: Test (E2E)
-    needs: setup
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    if: ${{ !contains(fromJson(inputs.disable-steps), 'test_e2e') && contains(fromJson(inputs.extra-steps), 'test_e2e') }}
-    steps:
-      - name: Inject environment variables
-        if: ${{ env.ENV != '' }}
-        run: |
-          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: package.json
-
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          cache: true
-          run_install: true
-
-      - run: pnpm run --if-present test:e2e
-
-  results:
+  validate:
     name: Report results
     runs-on: ${{ inputs.os }}
-    needs:
-      - setup
-      - typecheck
-      - format
-      - lint
-      - build
-      - test
-    if: always()
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
-      - name: Evaluate results
+      - name: Inject environment variables
+        if: ${{ env.ENV != '' }}
         run: |
-          results=(
-            "${{ needs.setup.result }}"
-            "${{ needs.typecheck.result }}"
-            "${{ needs.format.result }}"
-            "${{ needs.lint.result }}"
-            "${{ needs.build.result }}"
-            "${{ needs.test.result }}"
-          )
+          echo "$ENV" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> "$GITHUB_ENV"
 
-          for result in "${results[@]}"; do
-            if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
-              echo "CI failed due to job result: $result"
-              exit 1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: package.json
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          cache: true
+          run_install: true
+
+      - id: format
+        name: Format
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'format') }}
+        continue-on-error: true
+        run: pnpm run --if-present format:check
+
+      - id: lint
+        name: Lint
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'lint') }}
+        continue-on-error: true
+        run: pnpm run --if-present lint
+
+      - id: typecheck
+        name: Typecheck
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'typecheck') }}
+        continue-on-error: true
+        run: pnpm run --if-present typecheck
+
+      - id: test
+        name: Test
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'test') }}
+        continue-on-error: true
+        run: pnpm run --if-present test
+
+      - id: build
+        name: Build
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'build') }}
+        continue-on-error: true
+        run: pnpm run --if-present build
+
+      - id: test_e2e
+        name: Test (E2E)
+        if: ${{ !contains(fromJson(inputs.disable-steps), 'test_e2e') && contains(fromJson(inputs.extra-steps), 'test_e2e') }}
+        continue-on-error: true
+        run: pnpm run --if-present test:e2e
+
+      - name: Report results
+        if: ${{ always() }}
+        env:
+          FORMAT_OUTCOME: ${{ steps.format.outcome }}
+          LINT_OUTCOME: ${{ steps.lint.outcome }}
+          TYPECHECK_OUTCOME: ${{ steps.typecheck.outcome }}
+          TEST_OUTCOME: ${{ steps.test.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          TEST_E2E_OUTCOME: ${{ steps.test_e2e.outcome }}
+        run: |
+          failed=false
+
+          for outcome in \
+            "$FORMAT_OUTCOME" \
+            "$LINT_OUTCOME" \
+            "$TYPECHECK_OUTCOME" \
+            "$TEST_OUTCOME" \
+            "$BUILD_OUTCOME" \
+            "$TEST_E2E_OUTCOME"; do
+            if [ "$outcome" = "failure" ] || [ "$outcome" = "cancelled" ]; then
+              failed=true
             fi
           done
 
-          echo "All required jobs succeeded or were skipped"
+          if [ "$failed" = "true" ]; then
+            echo "One or more checks failed or were cancelled"
+            exit 1
+          fi
+
+          echo "All enabled checks succeeded"
