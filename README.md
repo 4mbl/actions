@@ -47,6 +47,25 @@ jobs:
     uses: 4mbl/actions/.github/workflows/ci-node-pnpm.yaml@v1
 ```
 
+Additionally, set the runtime and package manager versions in `devEngines` in `package.json`.
+
+```json
+{
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.x",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.x",
+      "onFail": "download"
+    }
+  }
+}
+```
+
 If you need to enforce successful CI runs, you can use the `Node.js / Report results` check in GitHub branch protection rules.
 
 ### `4mbl/actions/workflows/changeset-comment`
