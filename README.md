@@ -2,6 +2,9 @@
 
 Reusable GitHub Actions.
 
+> [!WARNING]
+> The `v1` branch is no longer maintained. Development continues on `main`.
+
 ## Tips
 
 - Setup dependabot or similar tool to automatically update GitHub Actions.
