@@ -36,6 +36,8 @@ Tags use `<component>/vYY.M.N` format: a two-digit year, an unpadded month, and 
 - `ci-node-pnpm/v26.9.1` - second September release
 - `ci-node-pnpm/v26.10.0` - first October release
 
+Breaking changes may occur in any release. When possible, changes that require consumers to update their workflows or actions are introduced in the first release of the following year.
+
 ## Workflows
 
 ### `ci-node-pnpm`
