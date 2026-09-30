@@ -1,0 +1,32 @@
+name: (Internal) Release tags
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/internal-release-tags.yml
+      - .github/scripts/release-tags.sh
+      - .github/workflows/ci-node-pnpm.yaml
+      - .github/workflows/ci-bun-bun.yml
+      - .github/workflows/changeset-comment.yml
+      - changeset/pr-comment/**
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-tags
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Tag changed components
+        shell: bash
+        run: bash .github/scripts/release-tags.sh
