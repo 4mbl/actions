@@ -9,6 +9,10 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Warn about unmaintained version
+      shell: bash
+      run: echo '::warning::This v1 action is no longer maintained. See https://github.com/4mbl/actions for maintained versions.'
+
     - name: Check required tools
       shell: bash
       run: |

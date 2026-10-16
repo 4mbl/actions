@@ -26,5 +26,8 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Warn about unmaintained version
+        run: echo '::warning::This v1 workflow is no longer maintained. See https://github.com/4mbl/actions for maintained versions.'
+
       - name: Post comment
         uses: 4mbl/actions/changeset/pr-comment@2081dceaa44e6779749a404249afd9d0b28ea9c3 # v1
