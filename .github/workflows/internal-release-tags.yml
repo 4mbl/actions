@@ -9,6 +9,7 @@ on:
       - .github/scripts/release-tags.sh
       - .github/workflows/ci-node-pnpm.yaml
       - .github/workflows/ci-bun-bun.yml
+      - .github/workflows/ci-python-uv.yml
       - .github/workflows/changeset-comment.yml
       - changeset/pr-comment/**
 
