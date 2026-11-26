@@ -80,6 +80,31 @@ Additionally, set the runtime and package manager versions in `devEngines` in `p
 
 If you need to enforce successful CI runs, you can use the `Node.js / Report results` check in GitHub branch protection rules.
 
+### `ci-python-uv`
+
+Commit `uv.lock` and include the dependencies for your enabled checks in the default dependency groups. The workflow runs Ruff formatting and lint checks, mypy on `src/`, pytest on `tests/`, and `uv build` for each requested Python version.
+
+```yaml
+# .github/workflows/ci.yml
+
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: 4mbl/actions/.github/workflows/ci-python-uv.yml@<sha> # ci-python-uv/v<version>
+    with:
+      python-versions: '["3.13", "3.14"]'
+      wheel-imports: my_package
+```
+
+Use `disable-steps` with a JSON array of `format`, `lint`, `typecheck`, `test`, or `build` to skip checks. Set `wheel-imports` to a space-separated list of modules to verify in the built wheel.
+
 ### `changeset-comment`
 
 ```yaml

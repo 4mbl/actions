@@ -11,6 +11,7 @@ month=$(date -u +%-m)
 for entry in \
   'ci-node-pnpm:.github/workflows/ci-node-pnpm.yaml' \
   'ci-bun-bun:.github/workflows/ci-bun-bun.yml' \
+  'ci-python-uv:.github/workflows/ci-python-uv.yml' \
   'changeset-comment:.github/workflows/changeset-comment.yml' \
   'changeset-pr-comment:changeset/pr-comment'; do
   component=${entry%%:*}

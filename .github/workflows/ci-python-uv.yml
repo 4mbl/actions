@@ -1,0 +1,77 @@
+on:
+  workflow_call:
+    inputs:
+      python-versions:
+        description: JSON array of Python versions to test.
+        type: string
+        required: true
+      os:
+        type: string
+        default: ubuntu-latest
+      timeout-minutes:
+        type: number
+        default: 10
+      disable-steps:
+        description: JSON array of checks to skip.
+        type: string
+        default: '[]'
+      wheel-imports:
+        description: Space-separated module names to import from the built wheel.
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJSON(inputs.python-versions) }}
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - id: sync
+        name: Install dependencies
+        run: uv sync --locked
+
+      - name: Format
+        if: ${{ !cancelled() && steps.sync.outcome == 'success' && !contains(fromJSON(inputs.disable-steps), 'format') }}
+        run: uv run --no-sync ruff format --check .
+
+      - name: Lint
+        if: ${{ !cancelled() && steps.sync.outcome == 'success' && !contains(fromJSON(inputs.disable-steps), 'lint') }}
+        run: uv run --no-sync ruff check . --extend-exclude=tests
+
+      - name: Typecheck
+        if: ${{ !cancelled() && steps.sync.outcome == 'success' && !contains(fromJSON(inputs.disable-steps), 'typecheck') }}
+        run: uv run --no-sync mypy src/
+
+      - name: Test
+        if: ${{ !cancelled() && steps.sync.outcome == 'success' && !contains(fromJSON(inputs.disable-steps), 'test') }}
+        run: uv run --no-sync pytest tests
+
+      - id: build
+        name: Build
+        if: ${{ !cancelled() && steps.sync.outcome == 'success' && !contains(fromJSON(inputs.disable-steps), 'build') }}
+        run: uv build
+
+      - name: Verify built wheel
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && inputs.wheel-imports != '' }}
+        shell: bash
+        env:
+          WHEEL_IMPORTS: ${{ inputs.wheel-imports }}
+        run: |
+          uv pip install --python .venv --no-deps --reinstall dist/*.whl
+          uv run --no-sync python -I -c 'import importlib, sys; tuple(map(importlib.import_module, sys.argv[1].split()))' "$WHEEL_IMPORTS"
